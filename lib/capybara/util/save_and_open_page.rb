@@ -10,7 +10,11 @@ module Capybara
       FileUtils.touch(name) unless File.exist?(name)
 
       tempfile = File.new(name,'w')
-      tempfile.write(rewrite_css_and_image_references(html))
+      rewrite_css_and_image_references(html)
+      unless Capybara.save_and_open_page_post_process.nil?
+        Capybara.save_and_open_page_post_process.call(html)
+      end
+      tempfile.write(html)
       tempfile.close
       tempfile.path
     end
